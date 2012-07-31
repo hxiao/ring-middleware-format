@@ -135,9 +135,9 @@
 
 (def custom-restful-echo
   (wrap-restful-response identity
-                         :default {:encoder (constantly "foobar")
-                                   :enc-type {:type "text"
-                                              :sub-type "foo"}}))
+                         :encoders [(make-encoder 
+                                      (constantly "foobar")
+                                      "text/foo")]))
 
 (deftest format-custom-restful-hashmap
   (let [req {:body {:foo "bar"} :headers {"accept" "text/foo"}}

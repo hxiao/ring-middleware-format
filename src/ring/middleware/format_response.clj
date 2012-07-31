@@ -208,19 +208,21 @@
   "Wrapper that tries to do the right thing with the response :body
   and provide a solid basis for a RESTful API. It will serialize to
   JSON, YAML, Clojure or HTML-wrapped YAML depending on Accept header.
-  It takes an optional :default parameter wich is an encoder-map (JSON
-  by default). See wrap-format-response for more details."
-  [handler & {:keys [default] :or {default (make-encoder json/generate-string
-                                                         "application/json")}}]
+  It takes an optional :encoders parameter wich is an encoder-map. 
+  See wrap-format-response for more details."
+  [handler & {:keys [encoders additional-encoders] 
+              :or {encoders [(make-encoder json/generate-string
+                                           "application/json")
+                             (make-encoder yaml/generate-string
+                                           "application/x-yaml")
+                             (make-encoder generate-native-clojure
+                                           "application/clojure")
+                             (make-encoder wrap-yaml-in-html
+                                           "text/html")
+                             (make-encoder json/generate-string
+                                           "application/json")]
+                   additional-encoders []}}]
   (wrap-format-response handler
                         :predicate serializable?
-                        :encoders [(make-encoder json/generate-string
-                                                 "application/json")
-                                   (make-encoder yaml/generate-string
-                                                 "application/x-yaml")
-                                   (make-encoder generate-native-clojure
-                                                 "application/clojure")
-                                   (make-encoder wrap-yaml-in-html
-                                                 "text/html")
-                                   default]
+                        :encoders (concat encoders additional-encoders)
                         :charset "utf-8"))

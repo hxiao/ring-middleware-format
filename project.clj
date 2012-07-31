@@ -1,4 +1,4 @@
-(defproject ring-middleware-format "0.2.0"
+(defproject ring-middleware-format "0.2.1"
   :description "Ring middleware for parsing parameters and emitting
   responses in various formats. See
   https://github.com/ngrunwald/ring-middleware-format"
